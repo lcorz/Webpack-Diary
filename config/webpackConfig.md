@@ -852,36 +852,37 @@ module.exports = {
 
     `Tips:`有两种模式可以实现热更替和自动刷新：
 
-    	>+ `iframe mode`: 默认模式，无需配置。
-    	>
-    	>  页面被嵌入在`iframe`中，并在模块变化时重新加载页面
-    	>
-    	>+ `inline mode`: 添加到`bundle.js`中，需要配置如下：
-    	>
-    	>     ```javascript
-    	>     devServer: {
-    	>         hot: true,
-    	>         inline: true
-    	>     },
-    	>     plugin: {
-    	>     	new webpack.HotModuleReplacementPlugin()
-    	>     }
-    	>     ```
-    	>
-    	>  使用`inline mode`时，当刷新页面的时候，一个小型的客户端被添加到`webpack.config.js`的入口文件中，入口文件由一个变成了两个：
-    	>
-    	>     ```javascript
-    	>     entry:{
-    	>         app:path.join(__dirname,'src','index.js')
-    	>     }
-    	>     
-    	>     // 变为
-    	>     entry:{
-    	>         app:[path.join(__dirname,'src','index.js'),
-    	>              'webpack-dev-server/client?http://localhost:8080/'
-    	>             ]
-    	>     }
-    	>     ```
+    > + `iframe mode`: 默认模式，无需配置。
+    >
+    >   页面被嵌入在`iframe`中，并在模块变化时重新加载页面
+    >
+    > + `inline mode`: 添加到`bundle.js`中，需要配置如下：
+    >
+    > + ```javascript
+    >   devServer: {
+    >       hot: true,
+    >       inline: true
+    >   },
+    >   plugin: {
+    >       new webpack.HotModuleReplacementPlugin()
+    >   }
+    >   
+    >   ```
+    >
+    >   使用`inline mode`时，当刷新页面的时候，一个小型的客户端被添加到`webpack.config.js`的入口文件中，入口文件由一个变成了两个：
+    >
+    >   ```javascript
+    >   entry:{
+    >       app:path.join(__dirname,'src','index.js')
+    >   }
+    >     
+    >   // 变为
+    >   entry:{
+    >       app:[path.join(__dirname,'src','index.js'),
+    >           'webpack-dev-server/client?http://localhost:8080/'
+    >       ]
+    >   }
+    >   ```
 
 13. 配置`webpack-dev-server`的三种方式：
 
