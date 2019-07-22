@@ -3,9 +3,9 @@
 var path = require('path')
 // 工具函数集合
 var utils = require('./utils')
-  // 配置文件
+// 配置文件
 var config = require('../config')
-  // 工具函数集合
+// 工具函数集合
 var vueLoaderConfig = require('./vue-loader.conf')
 
 /**
@@ -19,123 +19,123 @@ function resolve(dir) {
 }
 
 module.exports = {
-  // [1] 'development'或'production'或'none'
-  mode: 'development',
-  // [2] webpack编译时的基础路径
-  context: path.resolve('./src'),
-  // [3][4] 入口配置项
-  entry: {
-    app: './main.js'
-  },
-  // 出口配置项，webpack输出bundles的配置，默认值为./dist
-  output: {
-      // [5] 编译输出的文件名
-      filename: '[name].min.js',
-      // [6] 非入口(non-entry) chunk 文件的名称
-      chunkFilename: '[name].chunk.js',
-      // 编译输出的静态资源根路径。类型：字符串；格式：绝对路径。支持字符串模版。
-      path: config.build.assetsRoot,
-      // [7] 正式发布环境下编译输出的上线路径的根路径
-      publicPath: process.env.NODE_ENV === 'production' ?
-          config.build.assetsPublicPath : config.dev.assetsPublicPath,
-      // [8]* 该值取决于如何配置libraryTarget。默认值为var
-      library: '[name]',
-      // [8]* 模块以何种规范打包
-      libraryTarget: 'umd',
-      // 在使用libraryTarget: "umd"时，设置为true，则在UMD库中使用命名的AMD模块，否则采用匿名定义
-      umdNamedDefine: true
-      // 允许在运行时选择全局对象引用(webpack4新特性)
-      globalObject: 'this'
-  },
-  // [9] 控制是否生成，或如何生成sourceMap
-  devtool: 'eval-source-map',
-  // [13] 对webpack-dev-server的配置
-  devServer: {
-      // 服务器主机号
-      host: 'localhost',
-      // 指定开启服务的端口号
-      port: 8080,
-      // 是否在启动服务时，使用系统默认浏览器打开项目
-      open: false,
-      // [7] 打包生成静态文件的位置
-      publicPath: '/',
-      // 配置在客户端的日志等级，影响开发者工具中控制台看到的日志内容。可选值：none/error/warning/info
-      // info为输出所有日志类型；none为不输出任何日志
-      clientLogLevel: 'warning',
-      // [10] 是否对所有服务器资源启用gzip压缩，默认为false
-      compress: true,
-      // [11] 指定服务器的资源的根目录。默认为项目根目录。
-      contentBase: false,
-      // 服务器针对命中路由返回相应的HTML文件。例如可做404页面的定向跳转。使用正则匹配命中路由。
-      historyApiFallback: {
-          rewrites: [
-              { from: /.*/, to: path.posix.join('/', 'index.html') }
-          ]
-      },
-      // 编译出错时，是否在浏览器页面上显示错误
-      overlay: {
-          warnings: false,
-          errors: true
-      },
-      // 用来控制编译的时候shell上的输出内容，可选值为"errors-only"，"minimal"，"normal"，"verbose"
-      // 当不配置时很多没有用的信息会被打印出来。设置为"errors-only"时，只在编译的时候打印错误信息
-      stats: "errors-only"
-      // 与devServer.stats属于同种类型的配置信息
-      // 当参数为true时，控制台只输出第一次编译的信息，当保存再编译后不会输出信息（包括错误和警告）
-      quiet: true,
-      // webpack可以监听文件变化，发生变化时重新编译。该参数默认为true，表示启用监听模式。
-      watch: true,
-      // 文件更改的监控配置，用来制定watch模式
-      watchOptions: {
+    // [1] 'development'或'production'或'none'
+    mode: 'development',
+    // [2] webpack编译时的基础路径
+    context: path.resolve('./src'),
+    // [3][4] 入口配置项
+    entry: {
+        app: './main.js'
+    },
+    // 出口配置项，webpack输出bundles的配置，默认值为./dist
+    output: {
+        // [5] 编译输出的文件名
+        filename: '[name].min.js',
+        // [6] 非入口(non-entry) chunk 文件的名称
+        chunkFilename: '[name].chunk.js',
+        // 编译输出的静态资源根路径。类型：字符串；格式：绝对路径。支持字符串模版。
+        path: config.build.assetsRoot,
+        // [7] 正式发布环境下编译输出的上线路径的根路径
+        publicPath: process.env.NODE_ENV === 'production' ?
+            config.build.assetsPublicPath : config.dev.assetsPublicPath,
+        // [8]* 该值取决于如何配置libraryTarget。默认值为var
+        library: '[name]',
+        // [8]* 模块以何种规范打包
+        libraryTarget: 'umd',
+        // 在使用libraryTarget: "umd"时，设置为true，则在UMD库中使用命名的AMD模块，否则采用匿名定义
+        umdNamedDefine: true
+        // 允许在运行时选择全局对象引用(webpack4新特性)
+        globalObject: 'this'
+    },
+    // [9] 控制是否生成，或如何生成sourceMap
+    devtool: 'eval-source-map',
+    // [13] 对webpack-dev-server的配置
+    devServer: {
+        // 服务器主机号
+        host: 'localhost',
+        // 指定开启服务的端口号
+        port: 8080,
+        // 是否在启动服务时，使用系统默认浏览器打开项目
+        open: false,
+        // [7] 打包生成静态文件的位置
+        publicPath: '/',
+        // 配置在客户端的日志等级，影响开发者工具中控制台看到的日志内容。可选值：none/error/warning/info
+        // info为输出所有日志类型；none为不输出任何日志
+        clientLogLevel: 'warning',
+        // [10] 是否对所有服务器资源启用gzip压缩，默认为false
+        compress: true,
+        // [11] 指定服务器的资源的根目录。默认为项目根目录。
+        contentBase: false,
+        // 服务器针对命中路由返回相应的HTML文件。例如可做404页面的定向跳转。使用正则匹配命中路由。
+        historyApiFallback: {
+            rewrites: [
+                { from: /.*/, to: path.posix.join('/', 'index.html') }
+            ]
+        },
+        // 编译出错时，是否在浏览器页面上显示错误
+        overlay: {
+            warnings: false,
+            errors: true
+        },
+        // 用来控制编译的时候shell上的输出内容，可选值为"errors-only"，"minimal"，"normal"，"verbose"
+        // 当不配置时很多没有用的信息会被打印出来。设置为"errors-only"时，只在编译的时候打印错误信息
+        stats: "errors-only"
+        // 与devServer.stats属于同种类型的配置信息
+        // 当参数为true时，控制台只输出第一次编译的信息，当保存再编译后不会输出信息（包括错误和警告）
+        quiet: true,
+        // webpack可以监听文件变化，发生变化时重新编译。该参数默认为true，表示启用监听模式。
+        watch: true,
+        // 文件更改的监控配置，用来制定watch模式
+        watchOptions: {
           // 是否开启轮询（以毫秒为单位监听文件变动）
-          poll: false，
-      	  // 监听大量文件会造成CPU或内存的浪费，该配置可忽略一些不需要监听的文件，例如：'node_modules'
-      	  ignored: '/node_modules/'
-      },
-      // [12] 是否启用模块热更替（HMR）功能，若为true则要在plugin中添加HotModulesReplacePlugin插件
-      hot: true,
-      // [12] 是否开启自动刷新功能，默认为true
-      inline: true,
-      // 解决跨域问题，使用http-proxy-middleware插件
-      proxy: {
-          // 捕获API的标志，用于代理匹配
-          '/api': {
+          poll: false,
+          // 监听大量文件会造成CPU或内存的浪费，该配置可忽略一些不需要监听的文件，例如：'node_modules'
+          ignored: '/node_modules/'
+        },
+        // [12] 是否启用模块热更替（HMR）功能，若为true则要在plugin中添加HotModulesReplacePlugin插件
+        hot: true,
+        // [12] 是否开启自动刷新功能，默认为true
+        inline: true,
+        // 解决跨域问题，使用http-proxy-middleware插件
+        proxy: {
+            // 捕获API的标志，用于代理匹配
+            '/api': {
                 // 目标服务器 host
                 target: 'http://www.example.org',
                 // 默认false，是否需要改变原始主机头为目标URL。target是域名的话，需要这个参数。
-        		changeOrigin: true,
+                changeOrigin: true,
                 // 是否代理websockets
-        		ws: true,
+                ws: true,
                 // 设置支持https协议的代理
                 secure: false,
                 // 重写请求，比如我们源访问的是api/old-path，那么请求会被解析为/api/new-path
-        		pathRewrite: {
-            		'^/api/old-path' : '/api/new-path',
-           		 	'^/api/remove/path' : '/path'
-        		},
-       			router: {
-            		// 如果请求主机 == 'dev.localhost:3000',
-            		// 重写目标服务器 'http://www.example.org' 为 'http://localhost:8000'
-            		'dev.localhost:3000' : 'http://localhost:8000'
-        		}
-          }
-      },
-  },
-  // webpack4 提供了根据 mode值针对项目优化的默认配置。
-  // 而这些配置是在optimization设定的，根据项目可以自定义这些配置。
-  optimization: {
-      //取代插件中的 new webpack.NamedModulesPlugin()
-      namedModules: true,
-      namedChunks: true
-      // 若mode为production，则该项默认为true，执行默认压缩js。
-      // webpack会调用UglifyjsWebpackPlugin压缩文件
-      minimize: true,
-      // 自定义uglifyjs-webpack-plugin，配置其他第三方插件
-      minimizer: 
-      		mode === "development"
-    			? []
-    			: [
-                	// 自定义uglifyjs-webpack-plugin
+                pathRewrite: {
+                    '^/api/old-path' : '/api/new-path',
+                    '^/api/remove/path' : '/path'
+                },
+                router: {
+                    // 如果请求主机 == 'dev.localhost:3000',
+                    // 重写目标服务器 'http://www.example.org' 为 'http://localhost:8000'
+                    'dev.localhost:3000' : 'http://localhost:8000'
+                }
+            }
+        },
+    },
+    // webpack4 提供了根据 mode值针对项目优化的默认配置。
+    // 而这些配置是在optimization设定的，根据项目可以自定义这些配置。
+    optimization: {
+        //取代插件中的 new webpack.NamedModulesPlugin()
+        namedModules: true,
+        namedChunks: true,
+        // 若mode为production，则该项默认为true，执行默认压缩js。
+        // webpack会调用UglifyjsWebpackPlugin压缩文件
+        minimize: true,
+        // 自定义uglifyjs-webpack-plugin，配置其他第三方插件
+        minimizer: 
+            mode === "development"
+                ? []
+                : [
+                    // 自定义uglifyjs-webpack-plugin
                     new UglifyJsPlugin({
                         // 测试匹配文件
                         test: /\.js(\?.*)?$/i,
@@ -150,16 +150,16 @@ module.exports = {
                         // 压缩选项
                         uglifyOptions: {
                             compress: {
-          						// 在UglifyJs删除没有用到的代码时不输出警告
-          						warnings: false,
-          						// 删除所有的 `console` 语句，可以兼容ie浏览器。默认为false。
-          						drop_console: true,
-          						// 内嵌定义了但是只用到一次的变量，默认为false。例如：
+                                // 在UglifyJs删除没有用到的代码时不输出警告
+                                warnings: false,
+                                // 删除所有的 `console` 语句，可以兼容ie浏览器。默认为false。
+                                drop_console: true,
+                                // 内嵌定义了但是只用到一次的变量，默认为false。例如：
                                 // var x = 5; y = x 转换成 y = 5
-          						collapse_vars: true,
-          						// 提取出出现多次但是没有定义成变量去引用的静态值，默认为false。例如：
+                                collapse_vars: true,
+                                // 提取出出现多次但是没有定义成变量去引用的静态值，默认为false。例如：
                                 // x = 'Hello'; y = 'Hello' 转为var a = 'Hello'; x = a; y = b
-          						reduce_vars: true,
+                                reduce_vars: true,
                             },
                             output: {
                                 // 是否输出可读性较强的代码，即会保留空格和制表符。默认为true
@@ -174,9 +174,9 @@ module.exports = {
                         assetNameRegExp: /\.optimize\.css$/g,
                         // 用于压缩和优化CSS的处理器，默认是 cssnano。是一个函数
                         // 应该按照cssnano.process接口(接受一个CSS和options参数，返回一个Promise)
-            			cssProcessor: require('cssnano'),
+                        cssProcessor: require('cssnano'),
                         // 传递给cssProcessor的选项，压缩规则
-            			cssProcessorOptions: {
+                        cssProcessorOptions: {
                             // 对注释的处理
                             discardComments: {
                                 removeAll: true 
@@ -190,195 +190,195 @@ module.exports = {
                             }
                         },
                         // 表示插件能够在console中打印信息，默认值是true
-            			canPrint: true
+                        canPrint: true
                     })
-            	]
-      // [14] webpack4提供的模块拆分的方法。官方提供的默认值，不建议修改。
-      splitChunks: {
-          // [15] 通过改值来判断哪些模块会被提取为公共模块。可选三个参数：async | initial | all
-          // 默认为async，表示只会提取异步加载模块的公共代码。initial表示只会提取初始入口模块的代码。
-          chunks: "async",
-          // 模块大于30k会被抽离到公共模块
-          minSize: 30000,
-          // 模块出现1次就会被抽离到公共模块
-          minChunks: 1,
-          // 异步模块，一次最多只能被加载5个
-          maxAsyncRequests: 5,
-          // 入口模块最多只能加载3个
-          maxInitialRequests: 3,
-          // 打包分隔符
-          automaticNameDelimiter: '~'
-          // 控制切割之后代码块的命名
-          // true表示自动根据切割之前的代码块和缓存组键值(key)自动分配命名,否则传入一个String或function
-          // 命名与入口名称相同时,入口将会被移除
-          name: true,
-          // [16] 用来表示会提取到公共模块的集合，即，提取规则
-          // 默认设置了分割node_modules和公用模块(即，vendors和default缓存组)
-          // cacheGroups会继承和覆盖splitChunks的配置项
-          // 但是 test、priorty和reuseExistingChunk只能用于配置缓存组
-          cacheGroups: {
-            // 所有重复引用至少两次的代码，会被分配到default的缓存组
-            default: {
-              // 将至少有两个chunk引入的模块进行拆分
-              minChunks: 2,
-              // 优先级（如果一个模块满足了多个缓存组的条件，则按优先级分配）
-              priority: -20
-              // 是否使用已有的chunk
-              // 为true时，表示如果当前的 chunk 包含的模块已经被抽取出去了，那么将不会重新生成新的
-              reuseExistingChunk: true,
-            },
-            // 所有来自node_modules的模块分配到一个叫vendors的缓存组
-            vendors: {
-              // 用于控制哪些模块被这个缓存组匹配到。可传参数类型：RegExp、String和Function
-              // 表示只筛选从node_modules文件夹下引入的模块，所有第三方模块会被拆分出来
-              test: /[\\/]node_modules[\\/]/,
-              priority: -10
-            },
-            common: {
-                // 抽取的chunk的名字
-                name: 'common',
-                // 每项最好都要加上chunks参数，不然可能打包不出想要的东西
-                chunks: 'initial',
-                test: /[\\/]node_modules[\\/]/,
-                // 默认是30KB（注意这个体积是压缩之前的）在小于30kb的情况下一定要设置一个值
-                miniSize: 20,
-        		priority: 10,
-       			minChunks: 2,
-       			reuseExistingChunk: true，
-                // 如果没有设置minSize，则据此判断是否使用上层的minSize
-                // true：则使用0，false：使用上层minSize
-       			enforce: true
+                ],
+        // [14] webpack4提供的模块拆分的方法。官方提供的默认值，不建议修改。
+        splitChunks: {
+            // [15] 通过改值来判断哪些模块会被提取为公共模块。可选三个参数：async | initial | all
+            // 默认为async，表示只会提取异步加载模块的公共代码。initial表示只会提取初始入口模块的代码。
+            chunks: "async",
+            // 模块大于30k会被抽离到公共模块
+            minSize: 30000,
+            // 模块出现1次就会被抽离到公共模块
+            minChunks: 1,
+            // 异步模块，一次最多只能被加载5个
+            maxAsyncRequests: 5,
+            // 入口模块最多只能加载3个
+            maxInitialRequests: 3,
+            // 打包分隔符
+            automaticNameDelimiter: '~',
+            // 控制切割之后代码块的命名
+            // true表示自动根据切割之前的代码块和缓存组键值(key)自动分配命名,否则传入一个String或function
+            // 命名与入口名称相同时,入口将会被移除
+            name: true,
+            // [16] 用来表示会提取到公共模块的集合，即，提取规则
+            // 默认设置了分割node_modules和公用模块(即，vendors和default缓存组)
+            // cacheGroups会继承和覆盖splitChunks的配置项
+            // 但是 test、priorty和reuseExistingChunk只能用于配置缓存组
+            cacheGroups: {
+                // 所有重复引用至少两次的代码，会被分配到default的缓存组
+                default: {
+                    // 将至少有两个chunk引入的模块进行拆分
+                    minChunks: 2,
+                    // 优先级（如果一个模块满足了多个缓存组的条件，则按优先级分配）
+                    priority: -20,
+                    // 是否使用已有的chunk
+                    // 为true时，表示如果当前的 chunk 包含的模块已经被抽取出去了，那么将不会重新生成新的
+                    reuseExistingChunk: true,
+                },
+                // 所有来自node_modules的模块分配到一个叫vendors的缓存组
+                vendors: {
+                    // 用于控制哪些模块被这个缓存组匹配到。可传参数类型：RegExp、String和Function
+                    // 表示只筛选从node_modules文件夹下引入的模块，所有第三方模块会被拆分出来
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                common: {
+                    // 抽取的chunk的名字
+                    name: 'common',
+                    // 每项最好都要加上chunks参数，不然可能打包不出想要的东西
+                    chunks: 'initial',
+                    test: /[\\/]node_modules[\\/]/,
+                    // 默认是30KB（注意这个体积是压缩之前的）在小于30kb的情况下一定要设置一个值
+                    miniSize: 20,
+                    priority: 10,
+                    minChunks: 2,
+                    reuseExistingChunk: true,
+                    // 如果没有设置minSize，则据此判断是否使用上层的minSize
+                    // true：则使用0，false：使用上层minSize
+                    enforce: true
+                }
             }
-          }
-      },
-      // [17] 优化持久化缓存
-      runtimeChunk: {
+        },
+        // [17] 优化持久化缓存
+        runtimeChunk: {
               
-      }
-  },
-  resolve: {
-    // 自动补全的扩展名
-    extensions: ['.js', '.vue', '.json'],
-    // 路径别名
-    alias: {
-      // 例如 import Vue from 'vue'，会自动到 'vue/dist/vue.common.js'中寻找
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
-    }
-  },
-  module: {
-    rules: [{
-        // 审查 js 和 vue 文件
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        // 表示预先处理
-        enforce: "pre",
-        include: [resolve('src'), resolve('test')],
-        options: {
-          formatter: require('eslint-friendly-formatter')
         }
-      },
-      {
-        // 处理 vue文件
-        // 请确保webpack配置中添加 Vue Loader 的插件
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: vueLoaderConfig
-      },
-      {
-        // 编译 js
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
-      },
-      {
-        // 编译css
-        test: /\.css$/,
-        use: [
-          // 只在生产环境下使用 CSS 提取，这将便于你在开发环境下进行热重载
-          process.env.NODE_ENV !== 'production'
-            ? 'vue-style-loader'
-            : MiniCssExtractPlugin.loader,
-          {
-			loader: 'css-loader',
+    },
+    resolve: {
+        // 自动补全的扩展名
+        extensions: ['.js', '.vue', '.json'],
+        // 路径别名
+        alias: {
+            // 例如 import Vue from 'vue'，会自动到 'vue/dist/vue.common.js'中寻找
+            'vue$': 'vue/dist/vue.esm.js',
+            '@': resolve('src'),
+        }
+    },
+    module: {
+        rules: [{
+            // 审查 js 和 vue 文件
+            test: /\.(js|vue)$/,
+            loader: 'eslint-loader',
+            // 表示预先处理
+            enforce: "pre",
+            include: [resolve('src'), resolve('test')],
             options: {
-                // 解析css文件后，在浏览器调试
-                source-map: true,
-                // css-loader中内置了cssnano，通过压缩css，以达到提升加载速度和代码混淆的作用
-                // cssnano 能理解 CSS 代码的含义，而不仅仅是删掉空格
-                // 例如：margin: 10px 20px 10px 20px 被压缩成 margin: 10px 20px；
-                // 例如：color: #ff0000 被压缩成 color:red
-                // 若使用了OptimizeCSSAssetsPlugin则该项不需要配置
-                minimize: process.env.NODE_ENV === 'production'
-			}
-         ]
-      },
-      {
-        // 处理图片文件
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000,
-          name: utils.assetsPath('img/[name].[hash:7].[ext]')
-        }
-      },
-      {
-        // 处理字体文件
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000,
-          name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
-        }
-      }
-    ]
-  }，
-  plugins: {
-      // (dev)(pro) 请确保引入这个插件！
-      // 它的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。
-      // 例如：如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 <script> 块
-      new VueLoaderPlugin()
-      // (dev) 生成html文件，并动态注入css和js
-      new HtmlWebpackPlugin({
-          // 生成的html名称
-          filename: 'index.html',
-          // 指定模版，一个html文件（在该模版基础上动态加入css和js）
-          template: 'index.html',
-          // 资源的注入位置，可选参数：true | body | head | false
-          // 当为true和body时，script标签位于html文件的body底部
-          inject: true,
-          // 如果使用webpack4将该配置项设置为'none'
-          chunksSortMode: 'none',
-          // 是否对生成的html文件启用压缩，默认为false
-          minify: {
-              //是否大小写敏感
-              caseSensitive:false,
-              //是否去除空格
-              collapseWhitespace:true,
-              // 去掉属性引用
-              removeAttributeQuotes:true,
-              //去注释
-              removeComments:true,
-          }
-      }),
-      // (pro) 通过style-loader解析出来的css文件将会以内联样式注入到html中
-      // 该插件能将css文件单独提取出来，成为外部样式表。合并多个css为一个css
-      // 只在生产环境下使用 CSS 提取，这将便于你在开发环境下进行热重载
-      // 用于webpack4以上的版本，以下的版本使用extract-text-webpack-plugin
-      new MiniCssExtractPlugin({
+                formatter: require('eslint-friendly-formatter')
+            }
+        },
+        {
+            // 处理 vue文件
+            // 请确保webpack配置中添加 Vue Loader 的插件
+            test: /\.vue$/,
+            loader: 'vue-loader',
+            options: vueLoaderConfig
+        },
+        {
+            // 编译 js
+            test: /\.js$/,
+            loader: 'babel-loader',
+            include: [resolve('src'), resolve('test')]
+        },
+        {
+            // 编译css
+            test: /\.css$/,
+            use: [
+                // 只在生产环境下使用 CSS 提取，这将便于你在开发环境下进行热重载
+                process.env.NODE_ENV !== 'production'
+                    ? 'vue-style-loader'
+                    : MiniCssExtractPlugin.loader,
+                {
+                    loader: 'css-loader',
+                    options: {
+                        // 解析css文件后，在浏览器调试
+                        'source-map': true,
+                        // css-loader中内置了cssnano，通过压缩css，以达到提升加载速度和代码混淆的作用
+                        // cssnano 能理解 CSS 代码的含义，而不仅仅是删掉空格
+                        // 例如：margin: 10px 20px 10px 20px 被压缩成 margin: 10px 20px；
+                        // 例如：color: #ff0000 被压缩成 color:red
+                        // 若使用了OptimizeCSSAssetsPlugin则该项不需要配置
+                        minimize: process.env.NODE_ENV === 'production'
+                    }
+                }
+             ]
+        },
+        {
+            // 处理图片文件
+            test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+            loader: 'url-loader',
+            query: {
+                limit: 10000,
+                name: utils.assetsPath('img/[name].[hash:7].[ext]')
+            }
+        },
+        {
+            // 处理字体文件
+            test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+            loader: 'url-loader',
+            query: {
+                limit: 10000,
+                name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+            }
+        }]
+    },
+    plugins: {
+        // (dev)(pro) 请确保引入这个插件！
+        // 它的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。
+        // 例如：如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 <script> 块
+        new VueLoaderPlugin(),
+        // (dev) 生成html文件，并动态注入css和js
+        new HtmlWebpackPlugin({
+            // 生成的html名称
+            filename: 'index.html',
+            // 指定模版，一个html文件（在该模版基础上动态加入css和js）
+            template: 'index.html',
+            // 资源的注入位置，可选参数：true | body | head | false
+            // 当为true和body时，script标签位于html文件的body底部
+            inject: true,
+            // 如果使用webpack4将该配置项设置为'none'
+            chunksSortMode: 'none',
+            // 是否对生成的html文件启用压缩，默认为false
+            minify: {
+                //是否大小写敏感
+                caseSensitive:false,
+                //是否去除空格
+                collapseWhitespace:true,
+                // 去掉属性引用
+                removeAttributeQuotes:true,
+                //去注释
+                removeComments:true,
+            }
+        }),
+        // (pro) 通过style-loader解析出来的css文件将会以内联样式注入到html中
+        // 该插件能将css文件单独提取出来，成为外部样式表。合并多个css为一个css
+        // 只在生产环境下使用 CSS 提取，这将便于你在开发环境下进行热重载
+        // 用于webpack4以上的版本，以下的版本使用extract-text-webpack-plugin
+        new MiniCssExtractPlugin({
             // 配置和webpack.output的配置很像
             filename: 'css/[name].min.css',
             chunkFilename: "[id].css"
-      }), 
-      // (dev) 启动热更替时，配置的插件
-      new webpack.HotModuleReplacementPlugin(),
-      // (dev) 启动热更替时，可以显示模块的相对路径
-      new webpack.NamedModulesPlugin(),
-      // (pro) 生产环境对css进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
-      new OptimizeCSSAssetsPlugin(),
-      // (pro) 生产环境对js进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
-      new UglifyJsPlugin()
-  }
+        }), 
+        // (dev) 启动热更替时，配置的插件
+        new webpack.HotModuleReplacementPlugin(),
+        // (dev) 启动热更替时，可以显示模块的相对路径
+        new webpack.NamedModulesPlugin(),
+        // (pro) 生产环境对css进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
+        new OptimizeCSSAssetsPlugin(),
+        // (pro) 生产环境对js进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
+        new UglifyJsPlugin()
+    }
 }
 ```
 
