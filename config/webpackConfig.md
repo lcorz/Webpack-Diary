@@ -488,7 +488,7 @@ module.exports = {
        >
        > 以上配置打包后生成：
        >
-       > ![image-20190718154211836](/Users/sunshan/Library/Application Support/typora-user-images/image-20190718154211836.png)
+       > ![image-20190718154211836](../asset/image-20190718154211836.png)
 
        >**路径字符串**：此时webpack会自动生成路径目录，并将路径的最后作为`[name]`
        >
@@ -505,7 +505,7 @@ module.exports = {
        >
        >以上配置打包后生成：
        >
-       >![image-20190718154556791](/Users/sunshan/Library/Application Support/typora-user-images/image-20190718154556791.png)
+       >![image-20190718154556791](../asset/image-20190718154556791.png)
        >
        >
 
