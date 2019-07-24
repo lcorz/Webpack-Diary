@@ -124,9 +124,13 @@ module.exports = {
     // webpack4 提供了根据 mode值针对项目优化的默认配置。
     // 而这些配置是在optimization设定的，根据项目可以自定义这些配置。
     optimization: {
-        //取代插件中的 new webpack.NamedModulesPlugin()
+        // 取代插件中的 new webpack.NamedModulesPlugin()
         namedModules: true,
         namedChunks: true,
+        // 阻止报错
+        noEmitOnErrors: true,
+        // 预编译，作用域提升
+        concatenateModules: true,
         // 若mode为production，则该项默认为true，执行默认压缩js。
         // webpack会调用UglifyjsWebpackPlugin压缩文件
         minimize: true,
@@ -377,7 +381,13 @@ module.exports = {
         // (pro) 生产环境对css进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
         new OptimizeCSSAssetsPlugin(),
         // (pro) 生产环境对js进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
-        new UglifyJsPlugin()
+        new UglifyJsPlugin(),
+        // 在编译出现错误时，使用 NoEmitOnErrorsPlugin 来跳过输出阶段。这样可以确保输出资源不会包含错误。
+        // (pro) 另一种配置方式是设optimiza.noEmitOnErrors为true
+        new webpack.NoEmitOnErrorsPlugin(),
+        // 预编译，作用域提升。（！！！我是真的看不懂这个模块的功能啊，救救孩子吧）
+        // (pro) 另一种配置方式是设optimiza.concatenateModules为true
+        new webpack.optimize.ModuleConcatenationPlugin(),
     }
 }
 ```
@@ -386,15 +396,57 @@ module.exports = {
 
 ### 附录
 
-1. 该配置为webpack4新增属性，表示当前为开发环境还是生产环境，使webpack使用相应的内置优化，默认值为'production'。
+1. 该配置为webpack4新增属性，创建全局变量`process.env.NODE_ENV`，表示当前为开发环境还是生产环境，使`webpack`使用相应的内置优化，默认值为`'production'`。
 
    + 为`'development'`时:
 
-     不提供压缩，`process.env.NODE_ENV`设置为`development`
+     不提供压缩，`process.env.NODE_ENV`设置为`development`；
+
+     默认`devtool`为`eval`;
+
+     启用`NamedChunksPlugin`和`NamedModulesPlugin`（即，省略了给所有模块(源文件)和块(构建输出文件)命名的过程）
+
+     ```javascript
+     // webpack.development.config.js 改动
+     module.exports = {
+     + mode: 'development'
+         
+     - plugins: [
+     - new webpack.NamedModulesPlugin(), // 参见dependencies/webpackPlugin.md
+     - new webpack.NamedChunksPlugin(), // 参见dependencies/webpackPlugin.md
+     - new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("development") }),
+     - ]
+     }
+     ```
+
+     
 
    + 为`'production'`时：
 
-     提供压缩，`process.env.NODE_ENV`设置为production`
+     提供压缩，`process.env.NODE_ENV`设置为production`；
+
+     启用`FlagDependencyUsagePlugi`,`FlagIncludedChunksPlugi`, `ModuleConcatenationPlugin`, `NoEmitOnErrorsPlugin`, `OccurrenceOrderPlugin`, `SideEffectsFlagPlugin` 和 `UglifyJsPlugin`
+
+     ```javascript
+     // webpack.production.config.js 改动
+     module.exports = {
+     + mode: 'production',
+     - plugins: [
+     -  new UglifyJsPlugin(/* ... */), // a
+     -  new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("production") }),
+     -  new webpack.optimize.ModuleConcatenationPlugin(), // 预编译，作用域提升
+     -  new webpack.NoEmitOnErrorsPlugin() // 阻止报错
+     -  ]
+     }
+     
+     // a. UglifyJsPlugin这个插件也可以在optimize.minimizer中配置
+     // FlagDependencyUsagePlugin: 标记没有用到的依赖
+     // FlagIncludedChunksPlugin: 检测并标记模块之间的从属关系
+     // OccurrenceOrderPlugin: 按照调用次数来给chunks排序, 这样可以实现最优的构建输出
+     // SideEffectsFlagPlugin: 参见dependencies/webpackPlugin.md
+     ```
+
+     
 
    `Tips:`只设置`NODE_ENV`，则不会自动设置`mode`类型
 
@@ -854,35 +906,40 @@ module.exports = {
 
     > + `iframe mode`: 默认模式，无需配置。
     >
-    >   页面被嵌入在`iframe`中，并在模块变化时重新加载页面
+    > 页面被嵌入在`iframe`中，并在模块变化时重新加载页面
     >
     > + `inline mode`: 添加到`bundle.js`中，需要配置如下：
     >
     > + ```javascript
     >   devServer: {
-    >       hot: true,
-    >       inline: true
+    >   hot: true,
+    >   inline: true
     >   },
     >   plugin: {
-    >       new webpack.HotModuleReplacementPlugin()
-    >   }
-    >   
-    >   ```
-    >
-    >   使用`inline mode`时，当刷新页面的时候，一个小型的客户端被添加到`webpack.config.js`的入口文件中，入口文件由一个变成了两个：
-    >
-    >   ```javascript
-    >   entry:{
-    >       app:path.join(__dirname,'src','index.js')
-    >   }
-    >     
-    >   // 变为
-    >   entry:{
-    >       app:[path.join(__dirname,'src','index.js'),
-    >           'webpack-dev-server/client?http://localhost:8080/'
-    >       ]
+    >   new webpack.HotModuleReplacementPlugin()
     >   }
     >   ```
+    > ```
+    > 
+    > ```
+    >
+    > 使用`inline mode`时，当刷新页面的时候，一个小型的客户端被添加到`webpack.config.js`的入口文件中，入口文件由一个变成了两个：
+    >
+    > ```javascript
+    > entry:{
+    > app:path.join(__dirname,'src','index.js')
+    > }
+    >
+    > // 变为
+    > entry:{
+    > app:[path.join(__dirname,'src','index.js'),
+    >     'webpack-dev-server/client?http://localhost:8080/'
+    > ]
+    > }
+    >
+    > ```
+    > 
+    > ```
 
 13. 配置`webpack-dev-server`的三种方式：
 
