@@ -25,3 +25,6 @@ The repo includes common config and plugins about webpack.
  
  #### webpackPlugin.md
  + `webpack`的一些内置插件
+ 
+ ### asset/
+ + 文档资源
