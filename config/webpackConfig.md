@@ -79,7 +79,7 @@ module.exports = {
         },
         // 用来控制编译的时候shell上的输出内容，可选值为"errors-only"，"minimal"，"normal"，"verbose"
         // 当不配置时很多没有用的信息会被打印出来。设置为"errors-only"时，只在编译的时候打印错误信息
-        stats: "errors-only"
+        stats: "errors-only",
         // 与devServer.stats属于同种类型的配置信息
         // 当参数为true时，控制台只输出第一次编译的信息，当保存再编译后不会输出信息（包括错误和警告）
         quiet: true,
@@ -87,10 +87,10 @@ module.exports = {
         watch: true,
         // 文件更改的监控配置，用来制定watch模式
         watchOptions: {
-          // 是否开启轮询（以毫秒为单位监听文件变动）
-          poll: false,
-          // 监听大量文件会造成CPU或内存的浪费，该配置可忽略一些不需要监听的文件，例如：'node_modules'
-          ignored: '/node_modules/'
+            // 是否开启轮询（以毫秒为单位监听文件变动）
+            poll: false,
+            // 监听大量文件会造成CPU或内存的浪费，该配置可忽略一些不需要监听的文件，例如：'node_modules'
+            ignored: '/node_modules/'
         },
         // [12] 是否启用模块热更替（HMR）功能，若为true则要在plugin中添加HotModulesReplacePlugin插件
         hot: true,
@@ -132,9 +132,9 @@ module.exports = {
         // 预编译，作用域提升
         concatenateModules: true,
         // 若mode为production，则该项默认为true，执行默认压缩js。
-        // webpack会调用UglifyjsWebpackPlugin压缩文件
+        // webpack会调用terser-webpack-plugin压缩文件
         minimize: true,
-        // 自定义uglifyjs-webpack-plugin，配置其他第三方插件
+        // 配置第三方插件
         minimizer: 
             mode === "development"
                 ? []
@@ -173,6 +173,7 @@ module.exports = {
                             }
                         }
                     }),
+                    // 生产环境对css进行压缩和优化。
                     new OptimizeCSSAssetsPlugin({
                         // 正则表达式，用于匹配需要优化或者压缩的资源名。默认值是 /\.css$/g
                         assetNameRegExp: /\.optimize\.css$/g,
@@ -260,6 +261,58 @@ module.exports = {
               
         }
     },
+    plugins: {
+        // (dev)(pro) 请确保引入这个插件！
+        // 它的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。
+        // 例如：如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 <script> 块
+        new VueLoaderPlugin(),
+        // (dev) 生成html文件，并动态注入css和js
+        new HtmlWebpackPlugin({
+            // 生成的html名称
+            filename: 'index.html',
+            // 指定模版，一个html文件（在该模版基础上动态加入css和js）
+            template: 'index.html',
+            // 资源的注入位置，可选参数：true | body | head | false
+            // 当为true和body时，script标签位于html文件的body底部
+            inject: true,
+            // 如果使用webpack4将该配置项设置为'none'
+            chunksSortMode: 'none',
+            // 是否对生成的html文件启用压缩，默认为false
+            minify: {
+                //是否大小写敏感
+                caseSensitive:false,
+                //是否去除空格
+                collapseWhitespace:true,
+                // 去掉属性引用
+                removeAttributeQuotes:true,
+                //去注释
+                removeComments:true
+            }
+        }),
+        // (pro) 通过style-loader解析出来的css文件将会以内联样式注入到html中
+        // 该插件能将css文件单独提取出来，成为外部样式表。合并多个css为一个css
+        // 只在生产环境下使用 CSS 提取，这将便于你在开发环境下进行热重载
+        // 用于webpack4以上的版本，以下的版本使用extract-text-webpack-plugin
+        new MiniCssExtractPlugin({
+            // 配置和webpack.output的配置很像
+            filename: 'css/[name].min.css',
+            chunkFilename: "[id].css"
+        }), 
+        // (dev) 启动热更替时，配置的插件
+        new webpack.HotModuleReplacementPlugin(),
+        // (dev) 启动热更替时，可以显示模块的相对路径
+        new webpack.NamedModulesPlugin(),
+        // (pro) 生产环境对css进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
+        new OptimizeCSSAssetsPlugin(),
+        // (pro) 生产环境对js进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
+        new UglifyJsPlugin(),
+        // 在编译出现错误时，使用 NoEmitOnErrorsPlugin 来跳过输出阶段。这样可以确保输出资源不会包含错误。
+        // (pro) 另一种配置方式是设optimiza.noEmitOnErrors为true
+        new webpack.NoEmitOnErrorsPlugin(),
+        // 预编译，作用域提升。（！！！我是真的看不懂这个模块的功能啊，救救孩子吧）
+        // (pro) 另一种配置方式是设optimiza.concatenateModules为true
+        new webpack.optimize.ModuleConcatenationPlugin()
+    },
     resolve: {
         // 自动补全的扩展名
         extensions: ['.js', '.vue', '.json'],
@@ -336,58 +389,6 @@ module.exports = {
                 name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
             }
         }]
-    },
-    plugins: {
-        // (dev)(pro) 请确保引入这个插件！
-        // 它的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。
-        // 例如：如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 <script> 块
-        new VueLoaderPlugin(),
-        // (dev) 生成html文件，并动态注入css和js
-        new HtmlWebpackPlugin({
-            // 生成的html名称
-            filename: 'index.html',
-            // 指定模版，一个html文件（在该模版基础上动态加入css和js）
-            template: 'index.html',
-            // 资源的注入位置，可选参数：true | body | head | false
-            // 当为true和body时，script标签位于html文件的body底部
-            inject: true,
-            // 如果使用webpack4将该配置项设置为'none'
-            chunksSortMode: 'none',
-            // 是否对生成的html文件启用压缩，默认为false
-            minify: {
-                //是否大小写敏感
-                caseSensitive:false,
-                //是否去除空格
-                collapseWhitespace:true,
-                // 去掉属性引用
-                removeAttributeQuotes:true,
-                //去注释
-                removeComments:true,
-            }
-        }),
-        // (pro) 通过style-loader解析出来的css文件将会以内联样式注入到html中
-        // 该插件能将css文件单独提取出来，成为外部样式表。合并多个css为一个css
-        // 只在生产环境下使用 CSS 提取，这将便于你在开发环境下进行热重载
-        // 用于webpack4以上的版本，以下的版本使用extract-text-webpack-plugin
-        new MiniCssExtractPlugin({
-            // 配置和webpack.output的配置很像
-            filename: 'css/[name].min.css',
-            chunkFilename: "[id].css"
-        }), 
-        // (dev) 启动热更替时，配置的插件
-        new webpack.HotModuleReplacementPlugin(),
-        // (dev) 启动热更替时，可以显示模块的相对路径
-        new webpack.NamedModulesPlugin(),
-        // (pro) 生产环境对css进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
-        new OptimizeCSSAssetsPlugin(),
-        // (pro) 生产环境对js进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
-        new UglifyJsPlugin(),
-        // 在编译出现错误时，使用 NoEmitOnErrorsPlugin 来跳过输出阶段。这样可以确保输出资源不会包含错误。
-        // (pro) 另一种配置方式是设optimiza.noEmitOnErrors为true
-        new webpack.NoEmitOnErrorsPlugin(),
-        // 预编译，作用域提升。（！！！我是真的看不懂这个模块的功能啊，救救孩子吧）
-        // (pro) 另一种配置方式是设optimiza.concatenateModules为true
-        new webpack.optimize.ModuleConcatenationPlugin(),
     }
 }
 ```
