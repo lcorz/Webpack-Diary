@@ -1,13 +1,4 @@
 ```javascript
-// node自带的文件路径工具
-var path = require('path')
-// 工具函数集合
-var utils = require('./utils')
-// 配置文件
-var config = require('../config')
-// 工具函数集合
-var vueLoaderConfig = require('./vue-loader.conf')
-
 /**
  * 获得绝对路径
  * @method resolve
@@ -43,7 +34,7 @@ module.exports = {
         // [8]* 模块以何种规范打包
         libraryTarget: 'umd',
         // 在使用libraryTarget: "umd"时，设置为true，则在UMD库中使用命名的AMD模块，否则采用匿名定义
-        umdNamedDefine: true
+        umdNamedDefine: true,
         // 允许在运行时选择全局对象引用(webpack4新特性)
         globalObject: 'this'
     },
