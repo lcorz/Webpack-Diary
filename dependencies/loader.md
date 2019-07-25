@@ -172,6 +172,10 @@
 
 + 对`node`底层`API`的封装
 
+#### 24. `friendly-errors-webpack-plugin`
+
++ 更好的在终端看到webpack运行时的错误和警告等信息。提升开发体验。
+
 ## 配置项
 
 #### 1. `webpack rules`配置
