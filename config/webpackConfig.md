@@ -40,6 +40,8 @@ module.exports = {
     },
     // [9] 控制是否生成，或如何生成sourceMap
     devtool: 'eval-source-map',
+    // 是否展示错误通知。当参数为true时，需要FriendlyErrorsPlugin插件的加持
+    notifyOnErrors: true,
     // [13] 对webpack-dev-server的配置
     devServer: {
         // 服务器主机号
@@ -48,7 +50,7 @@ module.exports = {
         port: 8080,
         // 是否在启动服务时，使用系统默认浏览器打开项目
         open: false,
-        // [7] 打包生成静态文件的位置
+        // [7] 打包生成静态文件的位置（内存中）
         publicPath: '/',
         // 配置在客户端的日志等级，影响开发者工具中控制台看到的日志内容。可选值：none/error/warning/info
         // info为输出所有日志类型；none为不输出任何日志
@@ -73,6 +75,7 @@ module.exports = {
         stats: "errors-only",
         // 与devServer.stats属于同种类型的配置信息
         // 当参数为true时，控制台只输出第一次编译的信息，当保存再编译后不会输出信息（包括错误和警告）
+        // 当参数为true时，编译信息的输出依赖FriendlyErrorsPlugin插件的加持
         quiet: true,
         // webpack可以监听文件变化，发生变化时重新编译。该参数默认为true，表示启用监听模式。
         watch: true,
@@ -288,7 +291,32 @@ module.exports = {
             // 配置和webpack.output的配置很像
             filename: 'css/[name].min.css',
             chunkFilename: "[id].css"
-        }), 
+        }),
+        // (dev) 更好的在终端看到webpack运行时的错误和警告等信息。提升开发体验。
+        new FriendlyErrorsPlugin({
+            compilationSuccessInfo: {
+                messages: [`Your application is running here: http://${devServer.host}:${port}`],
+            },
+            onErrors: config.dev.notifyOnErrors
+                ? () => {
+                        const notifier = require('node-notifier')
+                        
+                        return (severity, errors) => {
+                            if (severity !== 'error') return
+                            
+                            const error = errors[0]
+                            const filename = error.file && error.file.split('!').pop()
+                            
+                            notifier.notify({
+                                title: packageConfig.name,
+                                message: severity + ': ' + error.name,
+                                subtitle: filename || '',
+                                icon: path.join(__dirname, 'logo.png')
+                            })
+                        }
+                    }
+                : undefined
+        })),
         // (dev) 启动热更替时，配置的插件
         new webpack.HotModuleReplacementPlugin(),
         // (dev) 固定chunk id (优化缓存)
@@ -669,8 +697,12 @@ module.exports = {
 
    + `Tips:` 当无`devSever.publicPath`配置项时，`web pack-dev-server`会打包到`output.publicPath`的目录下；当有`devSever.publicPath`配置项时，打包到该值目录下。
 
-8. 当使用`webpack`去构建一个可以被其他模块导入使用的库时，需要使用到这两个变量。这两个变量通常搭配使用。
+8. 当使用`webpack`去构建一个可以被其他模块导入使用的库时，需要使用到`libraryTarget / library`这两个变量，他们通常搭配在**生产环境**使用。
+   
+   + `output.library`
 
+     > 该值将会作为导出库的名称。
+     
    + `output.libraryTarget`
 
      > 配置以何种方式导出库。默认值为`var`，可选变量如下：
@@ -840,10 +872,6 @@ module.exports = {
      >
      >   
 
-   + `output.library`
-
-     > 该值将会作为导出库的名称。
-
 9. 该项的参数包括
 
    + `eval`： 生成代码 每个模块都被eval执行，并且存在@sourceURL
@@ -883,7 +911,7 @@ module.exports = {
      > 包含`cheap`的关键字：
      >
      > + 不包含原始代码的列信息，即，也就是说当你在浏览器中点击该代码的位置时， 光标只定位到行数，不定位到具体字符位置。
-     > + 不包含`loader`的`sourcemap`指：不包含`loader`的`sourcemap`。不包含它时候如果你使用了诸如`babel`等代码编译工具时， 定位到的原始代码将是经过编译后的代码位置，而非原始代码。
+     > + 不包含`loader`的`sourcemap`指：不包含`loader`的`sourcemap`。不包含它时，如果你使用了诸如`babel`等代码编译工具时，定位到的原始代码将是经过编译后的代码位置，而非原始代码。
 
 10. 优缺点：
 
