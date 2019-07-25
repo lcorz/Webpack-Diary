@@ -936,36 +936,31 @@ module.exports = {
     >
     > + `inline mode`: 添加到`bundle.js`中，需要配置如下：
     >
-    > + ```javascript
-    >   devServer: {
-    >   hot: true,
-    >   inline: true
-    >   },
-    >   plugin: {
-    >   new webpack.HotModuleReplacementPlugin()
-    >   }
-    >   ```
-    > ```
-    > 
+    > ```javascript
+    > devServer: {
+    >     hot: true,
+    >     inline: true
+    > },
+    > plugin: {
+    >     new webpack.HotModuleReplacementPlugin()
+    > }
     > ```
     >
-    > 使用`inline mode`时，当刷新页面的时候，一个小型的客户端被添加到`webpack.config.js`的入口文件中，入口文件由一个变成了两个：
+    >
+    > + 使用`inline mode`时，当刷新页面的时候，一个小型的客户端被添加到`webpack.config.js`的入口文件中，入口文件由一个变成了两个：
     >
     > ```javascript
     > entry:{
-    > app:path.join(__dirname,'src','index.js')
+    >     app:path.join(__dirname,'src','index.js')
     > }
     >
     > // 变为
     > entry:{
-    > app:[path.join(__dirname,'src','index.js'),
-    >     'webpack-dev-server/client?http://localhost:8080/'
-    > ]
+    >     app:[path.join(__dirname,'src','index.js'),
+    >         'webpack-dev-server/client?http://localhost:8080/'
+    >     ]
     > }
     >
-    > ```
-    > 
-    > ```
 
 13. 配置`webpack-dev-server`的三种方式：
 
@@ -1006,6 +1001,7 @@ module.exports = {
             }
           }),
           // 将webpack中runtime相关的代码放入manifest.js中
+          // ###confused 3###
           new webpack.optimize.CommonsChunkPlugin({
             name: "manifest",
             minChunks: Infinity
