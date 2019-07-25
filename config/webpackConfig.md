@@ -115,12 +115,13 @@ module.exports = {
     // webpack4 提供了根据 mode值针对项目优化的默认配置。
     // 而这些配置是在optimization设定的，根据项目可以自定义这些配置。
     optimization: {
-        // 取代插件中的 new webpack.NamedModulesPlugin()
+        // [1] 取代插件中的 new webpack.NamedModulesPlugin()
         namedModules: true,
+        // [1] 取代插件中的 new webpack.NamedChunkPlugin()
         namedChunks: true,
-        // 阻止报错
+        // [1] 阻止报错
         noEmitOnErrors: true,
-        // 预编译，作用域提升
+        // [1] 预编译，作用域提升
         concatenateModules: true,
         // 若mode为production，则该项默认为true，执行默认压缩js。
         // webpack会调用terser-webpack-plugin压缩文件
@@ -248,9 +249,8 @@ module.exports = {
             }
         },
         // [17] 优化持久化缓存
-        runtimeChunk: {
-              
-        }
+        // ###confused 3###
+        runtimeChunk: true
     },
     plugins: {
         // (dev)(pro) 请确保引入这个插件！
@@ -291,8 +291,14 @@ module.exports = {
         }), 
         // (dev) 启动热更替时，配置的插件
         new webpack.HotModuleReplacementPlugin(),
-        // (dev) 启动热更替时，可以显示模块的相对路径
-        new webpack.NamedModulesPlugin(),
+        // (dev) 固定chunk id (优化缓存)
+		// 另一种配置方式是在optimiza.namedChunks中添加。
+        new webpack.NamedChunkPlugin(),
+        // (dev) 启动热更替时，可以显示模块的相对路径(开发环境对module id的固定，优化缓存)
+        // 另一种配置方式是在optimiza.namedModules中添加。
+		new webpack.NamedModulesPlugin(),
+        // (pro) 生产环境对module id 的固定 (优化缓存)
+        new webpack.HashedModuleIdsPlugin(),
         // (pro) 生产环境对css进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
         new OptimizeCSSAssetsPlugin(),
         // (pro) 生产环境对js进行压缩和优化。另一种配置方式是在optimiza.minimizer中添加。
@@ -428,7 +434,7 @@ module.exports = {
      -  new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("production") }),
      -  new webpack.optimize.ModuleConcatenationPlugin(), // 预编译，作用域提升
      -  new webpack.NoEmitOnErrorsPlugin() // 阻止报错
-     -  ]
+     - ]
      }
      
      // a. UglifyJsPlugin这个插件也可以在optimize.minimizer中配置
@@ -548,11 +554,11 @@ module.exports = {
    若`entry`的配置中包含非静态的值，则可以将`entry`设置为一个函数，动态的返回`[3]`中所说的配置：
 
    ```javascript
+   ###confused 1###
    // 同步函数
    entry: () => {
        return {
-           a: './pages/a',
-           b: './pages/b'
+           '变量a': './pages/变量a'
        }
    }
    
@@ -560,8 +566,7 @@ module.exports = {
    entry: () => {
        return new Promise((resolve) => {
            resolve({
-               a: './pages/a',
-               b: './pages/b'
+               '变量a': './pages/变量a'
            })
        })
    }
@@ -569,7 +574,7 @@ module.exports = {
 
    + `Tips:`当结合 `output.library `选项时：如果传入数组，则只导出最后一项。
 
-5. 如果只有一个输出文件，可以写成静态名称。但在一般项目开发是，若不分块打包，则`bundle.js`的体积会很大
+5. 如果只有一个输出文件，可以写成静态名称。但在一般项目开发时，若不分块打包，则`bundle.js`的体积会很大
 
    + 创建`bundle`的方式包含：入口起点（`entry`）、代码拆分（`code spliting`）、插件提取（`plugin`）
 
@@ -584,6 +589,7 @@ module.exports = {
 
      ```javascript
      // 使用内部chunk id
+     // 关于chunk id 请参见dependencies/webpackPlugin.md [3] 
      output:{
      	filename: "[id].bundle.js"
      }
@@ -612,10 +618,9 @@ module.exports = {
        > **`chunkhash`**: 
        >
        > + 哪个文件内容被修改哪个文件的文件名`hash`值改变，同一个模块的文件`chunkhash`相同。
-       >
        > + 根据不同的入口（`entry`）文件进行依赖文件解析和构建对应的`chunk`，生成对应的`hash`值。在生产环境中将公共库与程序入库组件分开，进行单独打包构建，之后采用`chunkhash`的方式生成`hash`值，只要不修改公用库的代码就可以保证其`hash`值不受影响。
-       >
        > + 由于采用`chunkhash`的方式，所以项目主入口文件`main.js`及其依赖的`main.css`被打入了同一个模块中，故两者`chunkhash`相同。这样就回导致，如果`css`或`js`文件内容改变，那么与其关联文件的`hash`值都会改变，但其内容并没发生变化。还是没有达到缓存的目的。
+       > + 另一种情况：若对`css`文件进行了提取操作，而`css`文件采用`chunhash`的方式命名时，其他代码不做修改，即使对相应模块的`css`做了修改，产生的文件`chunkhash`不会改变。因为`chunkhash`是根据`entry chunk`计算出，而此时`css`部分已经做了抽离，故产生的`chunkhash`与`css`文件修改前相同。即，文件内容发生了修改，但是`chunkhash`并没有改变。
 
        > **`contenthash`**：
        >

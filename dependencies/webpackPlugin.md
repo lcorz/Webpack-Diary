@@ -6,12 +6,14 @@
 #### 2. `webpack.NamedModulesPlugin`
 
 + 在热加载时直接返回更新文件名，而不是文件的id
-+ 模块就是一个数组，引用也是按照在数组中的顺序引用，新增减模块都会导致序号的变化。
++ 模块就是一个数组，引用也是按照在数组中的顺序引用，新增减模块都会导致序号(`module id`)的变化，导致缓存失效。
 + 当开启`HMR`的时候使用该插件会显示模块的相对路径，建议用于**开发环境**。
++ 关联 [6]
 
 #### 3. `webpack.NamedChunksPlugin`
 
-+ 配置的每个chunks命名，原本的chunks也是数组，没有姓名
++ 配置的每个`chunks`命名，原本的`chunks`也是数组，没有姓名
++ 如果`chunk id`不固定，则当`chunks`增加或者减少时会和`module id`一样，都可能会导致`chunk`的顺序发生错乱，从而让`chunk`的缓存都失效
 
 #### 4. `webpack.HotModuleReplacementPlugin`
 
@@ -24,6 +26,8 @@
 #### 6. `webpack.HashedModuleIdsPlugin`
 
 + 该插件会根据模块的相对路径生成一个四位数的hash作为模块id, 建议用于**生产环境**。
+
++ 关联 [2]
 
   ```javascript
   new webpack.HashedModuleIdsPlugin({
