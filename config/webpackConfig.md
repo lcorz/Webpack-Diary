@@ -299,6 +299,7 @@ module.exports = {
             },
             onErrors: config.dev.notifyOnErrors
                 ? () => {
+                        // 支持node发送跨平台通知
                         const notifier = require('node-notifier')
                         
                         return (severity, errors) => {
@@ -316,7 +317,7 @@ module.exports = {
                         }
                     }
                 : undefined
-        })),
+        }),
         // (dev) 启动热更替时，配置的插件
         new webpack.HotModuleReplacementPlugin(),
         // (dev) 固定chunk id (优化缓存)
